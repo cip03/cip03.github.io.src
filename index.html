@@ -2,15 +2,27 @@
 title: Home
 ---
 
-<h2>Welcome</h2>
+<p>
+    Welcome to $siteTitle$.
+</p>
 
-<img src="/images/haskell-logo.png" style="float: right; margin: 10px;" />
+<p>
+    This is my personal blog on functional programming and its applications
+    to graphics, physics and distributive computing.
+    There may be occasional posts on logic + math, and hopefully just a few rants.
+</p>
 
-<p>Welcome to my blog!</p>
+<p>
+    Good Luck &amp; Have Fun!
+</p>
 
-<p>I've reproduced a list of recent posts here for your reading pleasure:</p>
+<h2> Recent Posts </h2>
 
-<h2>Posts</h2>
 $partial("templates/post-list.html")$
 
-<p>…or you can find more in the <a href="/archive.html">archives</a>.</p>
+<p>
+    …and <a href="/archive.html">more</a>.
+</p>
+
+<h2> Tags </h2>
+$tags$
