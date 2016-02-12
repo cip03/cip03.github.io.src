@@ -1,6 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
-import           Hakyll
+import Data.Monoid ((<>))
+import Hakyll
+
+siteTitle  = "Applicative Hazards"
+siteDesc   = "Stories on functional programming and the real world"
+siteUrl    = "http://clnx.github.io"
+siteAuthor = "Călin Ardelean"
+siteEmail  = "calinucs@gmail.com"
 
 config :: Configuration
 config = defaultConfiguration
@@ -8,83 +14,106 @@ config = defaultConfiguration
 
 feedConfig :: FeedConfiguration
 feedConfig = FeedConfiguration
-  { feedTitle       = "Applicative Hazards"
-  , feedDescription = "Stories on functional programming and the real world"
-  , feedAuthorName  = "Călin Ardelean"
-  , feedAuthorEmail = "calinucs@gmail.com"
-  , feedRoot        = "http://clnx.github.io"
+  { feedTitle       = siteTitle
+  , feedDescription = siteDesc
+  , feedAuthorName  = siteAuthor
+  , feedAuthorEmail = siteEmail
+  , feedRoot        = siteUrl
   }
 
+mainCtx :: Context String
+mainCtx =
+  constField "siteTitle"  siteTitle  <>
+  constField "siteUrl"    siteUrl    <>
+  constField "siteDesc"   siteDesc   <>
+  constField "siteAuthor" siteAuthor <>
+  constField "siteEmail"  siteEmail  <>
+  defaultContext
+
 postCtx :: Context String
-postCtx = dateField "date" "%B %e, %Y" `mappend` defaultContext
+postCtx = dateField "date" "%B %e, %Y" <> mainCtx
+
+postTagsCtx :: Tags -> Context String
+postTagsCtx tags = tagsField "tags" tags <> postCtx
 
 main :: IO ()
 main = hakyllWith config $ do
-    match "images/*" $ do
-        route   idRoute
-        compile copyFileCompiler
+  match "templates/*" $ compile templateCompiler
 
-    match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
+  match "images/*" $ do
+    route   idRoute
+    compile copyFileCompiler
 
-    match (fromList ["about.rst", "contact.markdown"]) $ do
-        route   $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
+  match "css/*" $ do
+    route   idRoute
+    compile compressCssCompiler
 
-    match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
-            >>= relativizeUrls
+  tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+  let cxtWithTags = postTagsCtx tags
 
-    create ["archive.html"] $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
-                    defaultContext
+  tagsRules tags $ \tag pat -> do
+    let title = "Posts tagged \"" <> tag <> "\""
+    route idRoute
+    compile $ do
+      posts <- recentFirst =<< loadAll pat
+      let ctx = constField "title" title <>
+                listField "posts" postCtx (return posts) <>
+                mainCtx
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-                >>= relativizeUrls
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/tag.html" ctx
+        >>= loadAndApplyTemplate "templates/default.html" ctx
+        >>= relativizeUrls
 
+  match "index.html" $ do
+    route idRoute
+    compile $ do
+      posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+      let indexCtx = listField "posts" postCtx (return posts) <>
+                     field "tags" (\_ -> renderTagList tags)  <>
+                     mainCtx
+      getResourceBody
+        >>= applyAsTemplate indexCtx
+        >>= loadAndApplyTemplate "templates/default.html" indexCtx
+        >>= relativizeUrls
 
-    match "index.html" $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
-                    defaultContext
+  match "posts/*" $ do
+    route $ setExtension "html"
+    compile $ pandocCompiler
+      >>= loadAndApplyTemplate "templates/post.html"    cxtWithTags
+      >>= saveSnapshot "content"
+      >>= loadAndApplyTemplate "templates/default.html" cxtWithTags
+      >>= relativizeUrls
 
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
+  match "contact.html" $ do
+    route idRoute
+    compile $ getResourceBody
+      >>= applyAsTemplate mainCtx
+      >>= loadAndApplyTemplate "templates/default.html" mainCtx
+      >>= relativizeUrls
 
-    match "templates/*" $ compile templateCompiler
+  match "archive.html" $ do
+    route idRoute
+    compile $ do
+      posts <- recentFirst =<< loadAll "posts/*"
+      let archiveCtx = listField "posts" postCtx (return posts) <> mainCtx
+      getResourceBody
+        >>= applyAsTemplate archiveCtx
+        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+        >>= relativizeUrls
 
-    create ["rss.xml"] $ do
-      route idRoute
-      compile $ do
-        let feedCtx = postCtx `mappend` bodyField "description"
-        posts <- fmap (take 10) . recentFirst =<<
-            loadAllSnapshots "posts/*" "content"
-        renderRss feedConfig feedCtx posts
+  create ["rss.xml"] $ do
+    route idRoute
+    compile $ do
+      let feedCtx = postCtx <> bodyField "description"
+      posts <- fmap (take 100) . recentFirst =<<
+        loadAllSnapshots "posts/*" "content"
+      renderRss feedConfig feedCtx posts
 
-    create ["atom.xml"] $ do
-      route idRoute
-      compile $ do
-        let feedCtx = postCtx `mappend` bodyField "description"
-        posts <- fmap (take 10) . recentFirst =<<
-            loadAllSnapshots "posts/*" "content"
-        renderAtom feedConfig feedCtx posts
+  create ["atom.xml"] $ do
+    route idRoute
+    compile $ do
+      let feedCtx = postCtx <> bodyField "description"
+      posts <- fmap (take 100) . recentFirst =<<
+        loadAllSnapshots "posts/*" "content"
+      renderAtom feedConfig feedCtx posts
