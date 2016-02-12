@@ -1,56 +1,89 @@
 body {
     color: black;
-    font-size: 16px;
+    font-size: 1em;
     margin: 0px auto 0px auto;
-    width: 600px;
+    width: 50em;
 }
 
 div#header {
-    border-bottom: 2px solid black;
-    margin-bottom: 30px;
-    padding: 12px 0px 12px 0px;
+    border-bottom: 1px dotted grey;
+    margin-bottom: 2em;
+    padding: 0.5em 0px 0.5em 0px;
+}
+
+div#header a {
+    color: grey;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div#header a:hover {
+    color: black;
 }
 
 div#logo a {
-    color: black;
     float: left;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
 }
 
-div#header #navigation {
+div#navigation {
     text-align: right;
 }
 
-div#header #navigation a {
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    margin-left: 12px;
-    text-decoration: none;
+div#navigation a {
+    margin-left: 0.8em;
     text-transform: uppercase;
 }
 
+img#atom-img {
+    width: 1em;
+    height: 1em;
+    vertical-align: baseline;
+    opacity: 0.5;
+}
+
+img#atom-img:hover {
+    opacity: 1;
+}
+
 div#footer {
-    border-top: solid 2px black;
+    border-top: 1px dotted black;
     color: #555;
-    font-size: 12px;
-    margin-top: 30px;
-    padding: 12px 0px 12px 0px;
+    font-size: 0.8em;
+    margin-top: 2em;
+    padding: 0.8em 0px 0.8em 0px;
     text-align: right;
 }
 
 h1 {
-    font-size: 24px;
+    font-size: 2em;
 }
 
 h2 {
-    font-size: 20px;
+    font-size: 1.5em;
 }
 
 div.info {
-    color: #555;
-    font-size: 14px;
+    color: grey;
+    font-size: 0.8em;
     font-style: italic;
+}
+
+p {
+    text-align: justify;
+}
+
+a:link {
+    color:#5588aa;
+    text-decoration: none;
+}
+
+a:visited {
+    color: grey;
+    text-decoration: none;
+}
+
+a:hover {
+    color: black;
+    text-decoration: underline;
 }
