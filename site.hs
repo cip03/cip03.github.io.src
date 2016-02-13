@@ -85,13 +85,6 @@ main = hakyllWith config $ do
       >>= loadAndApplyTemplate "templates/default.html" cxtWithTags
       >>= relativizeUrls
 
-  match "contact.html" $ do
-    route idRoute
-    compile $ getResourceBody
-      >>= applyAsTemplate mainCtx
-      >>= loadAndApplyTemplate "templates/default.html" mainCtx
-      >>= relativizeUrls
-
   match "archive.html" $ do
     route idRoute
     compile $ do

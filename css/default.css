@@ -7,7 +7,7 @@ body {
 
 div#header {
     border-bottom: 1px dotted grey;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
     padding: 0.5em 0px 0.5em 0px;
 }
 
@@ -26,23 +26,20 @@ div#logo a {
     float: left;
 }
 
-div#navigation {
+div#feed {
     text-align: right;
 }
 
-div#navigation a {
-    margin-left: 0.8em;
-    text-transform: uppercase;
-}
-
-img#atom-img {
+img.icon {
     width: 1em;
     height: 1em;
-    vertical-align: baseline;
+    vertical-align: bottom;
     opacity: 0.5;
+    margin: 0;
+    padding: 0;
 }
 
-img#atom-img:hover {
+img.icon:hover {
     opacity: 1;
 }
 
@@ -51,8 +48,22 @@ div#footer {
     color: #555;
     font-size: 0.8em;
     margin-top: 2em;
-    padding: 0.8em 0px 0.8em 0px;
+    padding: 0.6em 0px 0.8em 0px;
+}
+
+div#contact {
+    float: left;
+}
+
+div#contact a {
+    margin: 0 0 0 0.4em;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+div#hakyll {
     text-align: right;
+    padding-top: 0.2em;
 }
 
 h1 {
