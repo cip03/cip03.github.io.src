@@ -68,8 +68,11 @@ main = hakyllWith config $ do
   match "index.html" $ do
     route idRoute
     compile $ do
-      posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
-      let indexCtx = listField "posts" postCtx (return posts) <>
+      posts <- recentFirst =<< loadAllSnapshots "posts/*" "content"
+      let (postsNew, postsOld) = splitAt 1 posts
+      let indexCtx = constField "title" "Home" <>
+                     listField "postsNew" postCtx (return postsNew) <>
+                     listField "postsOld" postCtx (return postsOld) <>
                      field "tags" (\_ -> renderTagList tags)  <>
                      mainCtx
       getResourceBody
@@ -80,20 +83,10 @@ main = hakyllWith config $ do
   match "posts/*" $ do
     route $ setExtension "html"
     compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/post.html"    cxtWithTags
       >>= saveSnapshot "content"
+      >>= loadAndApplyTemplate "templates/post.html"    cxtWithTags
       >>= loadAndApplyTemplate "templates/default.html" cxtWithTags
       >>= relativizeUrls
-
-  match "archive.html" $ do
-    route idRoute
-    compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
-      let archiveCtx = listField "posts" postCtx (return posts) <> mainCtx
-      getResourceBody
-        >>= applyAsTemplate archiveCtx
-        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-        >>= relativizeUrls
 
   create ["rss.xml"] $ do
     route idRoute

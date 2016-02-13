@@ -1,28 +1,19 @@
----
-title: Home
----
+$for(postsNew)$
+<h1><a href="$url$">$title$</a></h1>
+$partial("templates/post-header.html")$
+<div class="contents">
+$body$
+</div>
+$endfor$
 
-<p>
-    Welcome to $siteTitle$.
-</p>
+<h1> Older Posts </h1>
+<div class="contents">
+$for(postsOld)$
+    <a href="$url$">$title$</a> - $date$
+$endfor$
+</div>
 
-<p>
-    This is my personal blog on functional programming and its applications
-    to graphics, physics and distributive computing.
-    There may be occasional posts on logic + math, and hopefully just a few rants.
-</p>
-
-<p>
-    Good Luck &amp; Have Fun!
-</p>
-
-<h2> Recent Posts </h2>
-
-$partial("templates/post-list.html")$
-
-<p>
-    …and <a href="/archive.html">more</a>.
-</p>
-
-<h2> Tags </h2>
+<h1> Tags </h1>
+<div class="contents">
 $tags$
+</div>

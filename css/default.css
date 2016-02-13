@@ -5,6 +5,8 @@ body {
     width: 50em;
 }
 
+/* Header *********************************************************************/
+
 div#header {
     border-bottom: 1px dotted grey;
     margin-bottom: 1em;
@@ -43,6 +45,8 @@ img.icon:hover {
     opacity: 1;
 }
 
+/* Footer *********************************************************************/
+
 div#footer {
     border-top: 1px dotted black;
     color: #555;
@@ -66,12 +70,21 @@ div#hakyll {
     padding-top: 0.2em;
 }
 
+/* Content ********************************************************************/
+
+div.contents {
+    margin-left: 2em;
+    padding-left: 1em;
+    border-left: 1px dotted black;
+}
+
 h1 {
-    font-size: 2em;
+    font-size: 1.8em;
+    margin-bottom: 0.2em;
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
 
 div.info {
