@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Data.Monoid ((<>))
 import Hakyll
+import Text.Pandoc.Options
 
 siteTitle  = "Applicative Hazards"
 siteDesc   = "Stories on functional programming and the real world"
@@ -82,7 +83,13 @@ main = hakyllWith config $ do
 
   match "posts/*" $ do
     route $ setExtension "html"
-    compile $ pandocCompiler
+    compile $ pandocCompilerWith
+        defaultHakyllReaderOptions
+        defaultHakyllWriterOptions
+          { writerSectionDivs = True
+          , writerHTMLMathMethod = MathJax "" }
+          {-, WebTeX "http://chart.apis.google.com/chart?cht=tx&chl=" -}
+          {-, writerTableOfContents = True -}
       >>= saveSnapshot "content"
       >>= loadAndApplyTemplate "templates/post.html"    cxtWithTags
       >>= loadAndApplyTemplate "templates/default.html" cxtWithTags

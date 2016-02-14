@@ -70,7 +70,28 @@ div#hakyll {
     padding-top: 0.2em;
 }
 
+/* Abstract *******************************************************************/
+
+div#abstract>p {
+    margin-left: 2em;
+    margin-right: 2em;
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+div#abstract>h2 {
+    font-size: 1em;
+    font-style: italic;
+    color: grey;
+}
+
 /* Content ********************************************************************/
+
+div.info {
+    color: grey;
+    font-size: 0.8em;
+    font-style: italic;
+}
 
 div.contents {
     margin-left: 2em;
@@ -89,12 +110,6 @@ h2 {
 
 h3 {
     font-size: 1em;
-}
-
-div.info {
-    color: grey;
-    font-size: 0.8em;
-    font-style: italic;
 }
 
 p {
