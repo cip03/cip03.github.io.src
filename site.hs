@@ -34,9 +34,6 @@ mainCtx =
 postCtx :: Context String
 postCtx = dateField "date" "%B %e, %Y" <> mainCtx
 
-postTagsCtx :: Tags -> Context String
-postTagsCtx tags = tagsField "tags" tags <> postCtx
-
 main :: IO ()
 main = hakyllWith config $ do
   match "templates/*" $ compile templateCompiler
@@ -50,16 +47,16 @@ main = hakyllWith config $ do
     compile compressCssCompiler
 
   tags <- buildTags "posts/*" (fromCapture "tags/*.html")
-  let cxtWithTags = postTagsCtx tags
+  let postTagsCtx = tagsField "tags" tags <> postCtx
 
   tagsRules tags $ \tag pat -> do
     let title = "Posts tagged \"" <> tag <> "\""
     route idRoute
     compile $ do
       posts <- recentFirst =<< loadAll pat
-      let ctx = constField "title" title <>
-                listField "posts" postCtx (return posts) <>
-                mainCtx
+      let ctx = constField "title" title
+             <> listField "posts" postCtx (return posts)
+             <> mainCtx
 
       makeItem ""
         >>= loadAndApplyTemplate "templates/tag.html" ctx
@@ -71,11 +68,11 @@ main = hakyllWith config $ do
     compile $ do
       posts <- recentFirst =<< loadAllSnapshots "posts/*" "content"
       let (postsNew, postsOld) = splitAt 1 posts
-      let indexCtx = constField "title" "Home" <>
-                     listField "postsNew" postCtx (return postsNew) <>
-                     listField "postsOld" postCtx (return postsOld) <>
-                     field "tags" (\_ -> renderTagList tags)  <>
-                     mainCtx
+      let indexCtx = constField "title" "Home"
+                  <> listField "postsNew" postTagsCtx (return postsNew)
+                  <> listField "postsOld" postTagsCtx (return postsOld)
+                  <> field "tags" (\_ -> renderTagList tags)
+                  <> mainCtx
       getResourceBody
         >>= applyAsTemplate indexCtx
         >>= loadAndApplyTemplate "templates/default.html" indexCtx
@@ -87,12 +84,12 @@ main = hakyllWith config $ do
         defaultHakyllReaderOptions
         defaultHakyllWriterOptions
           { writerSectionDivs = True
+          , writerTableOfContents = True
           , writerHTMLMathMethod = MathJax "" }
           {-, WebTeX "http://chart.apis.google.com/chart?cht=tx&chl=" -}
-          {-, writerTableOfContents = True -}
       >>= saveSnapshot "content"
-      >>= loadAndApplyTemplate "templates/post.html"    cxtWithTags
-      >>= loadAndApplyTemplate "templates/default.html" cxtWithTags
+      >>= loadAndApplyTemplate "templates/post.html"    postTagsCtx
+      >>= loadAndApplyTemplate "templates/default.html" postTagsCtx
       >>= relativizeUrls
 
   create ["rss.xml"] $ do
