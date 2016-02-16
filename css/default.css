@@ -70,7 +70,7 @@ div#hakyll {
     padding-top: 0.2em;
 }
 
-/* Abstract *******************************************************************/
+/* Abstract & TOC *************************************************************/
 
 div#abstract>p {
     margin-left: 2em;
@@ -79,10 +79,25 @@ div#abstract>p {
     font-style: italic;
 }
 
-div#abstract>h2 {
+div#abstract>h2, div#contents>h3 {
     font-size: 1em;
     font-style: italic;
     color: grey;
+}
+
+/* MathML ********************************************************************/
+
+img#mathml-img {
+    height: 2.0em;
+    opacity: 0.5;
+    float: left;
+    margin: 0.2em 0.5em 0.2em 0;
+    padding-right: 0.4em;
+    border-right: 1px dotted gray;
+}
+
+img#mathml-img:hover {
+    opacity: 1;
 }
 
 /* Content ********************************************************************/
@@ -129,6 +144,10 @@ a:visited {
 a:hover {
     color: black;
     text-decoration: underline;
+}
+
+math {
+    font-size: 1.2em;
 }
 
 code {

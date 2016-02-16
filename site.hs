@@ -84,8 +84,8 @@ main = hakyllWith config $ do
         defaultHakyllReaderOptions
         defaultHakyllWriterOptions
           { writerSectionDivs = True
-          , writerTableOfContents = True
-          , writerHTMLMathMethod = MathJax "" }
+          , writerHTMLMathMethod = MathML Nothing }
+          {-, writerHTMLMathMethod = MathJax "" -}
           {-, WebTeX "http://chart.apis.google.com/chart?cht=tx&chl=" -}
       >>= saveSnapshot "content"
       >>= loadAndApplyTemplate "templates/post.html"    postTagsCtx
