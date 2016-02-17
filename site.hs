@@ -46,6 +46,10 @@ main = hakyllWith config $ do
     route   idRoute
     compile compressCssCompiler
 
+  match "CNAME" $ do
+    route   idRoute
+    compile copyFileCompiler
+
   tags <- buildTags "posts/*" (fromCapture "tags/*.html")
   let postTagsCtx = tagsField "tags" tags <> postCtx
 
