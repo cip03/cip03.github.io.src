@@ -5,7 +5,7 @@ import Text.Pandoc.Options
 
 siteTitle  = "Applicative Hazards"
 siteDesc   = "Stories on functional programming and the real world"
-siteUrl    = "http://cip03.github.io"
+siteUrl    = "http://blog.cip03.xyz"
 siteAuthor = "Călin Ardelean"
 siteEmail  = "calinucs@gmail.com"
 
