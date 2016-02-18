@@ -7,7 +7,7 @@ siteTitle  = "Applicative Hazards"
 siteDesc   = "Stories on functional programming and the real world"
 siteUrl    = "http://blog.mmn80.xyz"
 siteAuthor = "Călin Ardelean"
-siteEmail  = "calinucs@gmail.com"
+siteEmail  = "mmn80cpu@gmail.com"
 
 config :: Configuration
 config = defaultConfiguration
