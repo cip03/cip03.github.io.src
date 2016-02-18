@@ -1,4 +1,4 @@
-cip03.github.io
+mmn80.github.io
 ==============
 
 These are the [Hakyll][hakyll] sources for my blog.
@@ -11,5 +11,5 @@ You would just set `destinationDirectory` to `..` and add a `_config.yml`
 with an `ignore: src` inside so Github's *Jakyll* would skip the sources when rendering.
 I tried it, it works, except for the `clean`/`rebuild` thing.
 
-[repo]: https://github.com/cip03/cip03.github.io "cip03.github.io"
+[repo]: https://github.com/mmn80/mmn80.github.io "mmn80.github.io"
 [hakyll]: http://jaspervdj.be/hakyll "Hakyll website"

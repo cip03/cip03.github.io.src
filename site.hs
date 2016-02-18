@@ -5,13 +5,13 @@ import Text.Pandoc.Options
 
 siteTitle  = "Applicative Hazards"
 siteDesc   = "Stories on functional programming and the real world"
-siteUrl    = "http://blog.cip03.xyz"
+siteUrl    = "http://blog.mmn80.xyz"
 siteAuthor = "Călin Ardelean"
 siteEmail  = "calinucs@gmail.com"
 
 config :: Configuration
 config = defaultConfiguration
-  { deployCommand = "rsync -r _site/* ../cip03.github.io/" }
+  { deployCommand = "rsync -r _site/* ../mmn80.github.io/" }
 
 feedConfig :: FeedConfiguration
 feedConfig = FeedConfiguration
