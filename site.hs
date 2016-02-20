@@ -82,19 +82,26 @@ main = hakyllWith config $ do
         >>= loadAndApplyTemplate "templates/default.html" indexCtx
         >>= relativizeUrls
 
-  match "posts/*" $ do
-    route $ setExtension "html"
-    compile $ pandocCompilerWith
+  let comPandoc = pandocCompilerWith
         defaultHakyllReaderOptions
         defaultHakyllWriterOptions
           { writerSectionDivs = True
           , writerHTMLMathMethod = MathML Nothing }
           {-, writerHTMLMathMethod = MathJax "" -}
           {-, WebTeX "http://chart.apis.google.com/chart?cht=tx&chl=" -}
-      >>= saveSnapshot "content"
-      >>= loadAndApplyTemplate "templates/post.html"    postTagsCtx
-      >>= loadAndApplyTemplate "templates/default.html" postTagsCtx
-      >>= relativizeUrls
+
+  let comPost it =
+            loadAndApplyTemplate "templates/post.html"    postTagsCtx it
+        >>= loadAndApplyTemplate "templates/default.html" postTagsCtx
+        >>= relativizeUrls
+
+  match "posts/*" $ do
+    route $ setExtension "html"
+    compile $ comPandoc >>= saveSnapshot "content" >>= comPost
+
+  match "drafts/*" $ do
+    route $ setExtension "html"
+    compile $ comPandoc >>= comPost
 
   create ["rss.xml"] $ do
     route idRoute
