@@ -3,8 +3,8 @@ import Data.Monoid ((<>))
 import Hakyll
 import Text.Pandoc.Options
 
-siteTitle  = "Applicative Hazards"
-siteDesc   = "Stories on functional programming and the real world"
+siteTitle  = "Functional Transfixity"
+siteDesc   = "Stories on types, functional programming and the real world"
 siteUrl    = "http://blog.mmn80.xyz"
 siteAuthor = "Călin Ardelean"
 siteEmail  = "mmn80cpu@gmail.com"
