@@ -131,6 +131,14 @@ p {
     text-align: justify;
 }
 
+hr {
+    border: 0;
+    height: 1px;
+    margin: 1.5em 8em 1.5em 8em;
+    text-align: center;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+}
+
 a:link {
     color:#5588aa;
     text-decoration: none;
