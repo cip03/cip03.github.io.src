@@ -1,12 +1,18 @@
 ---
-title: Some technical details about this blog
+title: Notes about this web site's bowels
 author: Călin Ardelean
 tags: meta
 math: true
 ---
 
-The markdown and the beast
---------------------------
+### Contents
+- [Static generator]
+- [Web theme]
+- [Comments]
+- [Tracking & analytics]
+
+Static generator
+----------------
 
 Overall I'm quite pleased with [Hakyll], the Haskell [Jakyll].
 
@@ -67,6 +73,54 @@ search engine robots' situational awareness (humans' too!).
 
 Hope this pasta is plain enough for a copy.
 
+Comments
+--------
+
+Initially I had a *Disqus* comments section, but then I read
+[Chris Done's post][done] and reconsidered.
+
+Indeed, the matter was bothering me since the beginning but couldn't quite say
+why.
+I don't really buy the "freedom of expression" or "unpopular ideas"
+framing, but still regard blog comments sections as the worst possible avenue
+of online debate.
+Yes, worse then youtube, but let me explain.
+
+First, let's get out of the way issues like typos and other corrections.
+E-mail works great for that.
+
+Then there is the problem of ownership, or hosting, in relation to each comment
+and the discussion as a whole.
+*Disqus* deals with the first part, I assume (website disappears, but you keep
+your, now meaningless, comments), but for people to entrust their effort posts
+to a host, they need to ascertain its reliability, fairness, and general
+usefulness.
+This may involve having good and active moderators, trusting the website won't
+drop its back archives due to some natural, financial or legal issue,
+expecting many dialog-worthy individuals on the same page, etc.
+
+But, due to network effects, it is in the nature of all these things to
+reinforce each other.
+Hence, the best places to publicly talk about anything, including blog posts,
+will always be popular hangouts specifically tuned for this purpose,
+like *reddit* and other forums, or community blogs like the
+[The n-Category Café][ncat], or famous professors' blogs.
+
+As for the rest of us, if once in a while you write an article whose intent
+is to provoke debate, you can always post it in such a forum and, if you like,
+link the forum thread at the back of your article.
+
+Tracking & analytics
+--------------------
+
+I'm a total hypocrite.
+
+In fact, I wont add much as it should be pretty clear what I mean.
+This is also why I think confiding private data to governments or corporations
+is the worst idea ever.
+They are people like you & me, after all.
+Well, me, as I don't know you.
+
 [Hakyll]: http://jaspervdj.be/hakyll "Hakyll"
 [Jakyll]: http://jekyllrb.com/ "Jakyll"
 [github]: https://pages.github.com "GitHub Pages"
@@ -79,3 +133,6 @@ Hope this pasta is plain enough for a copy.
 
 [Inkscape]: https://inkscape.org/en/ "Inkscape"
 [dan]: http://blog.sigfpe.com/ "A Neighborhood of Infinity"
+
+[done]: http://chrisdone.com/posts/blog-comments "Comments on my blog - Chris Done"
+[ncat]: https://golem.ph.utexas.edu/category/ "The n-Category Café"
