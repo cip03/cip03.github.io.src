@@ -61,6 +61,7 @@ With a *SVG* editor like [Inkscape] it's snappy to take some public domain
 icon from the net (wikipedia has plenty) and delete layers, change colors and
 sizes, or add your own shapes.
 The hover effect just uses the *CSS3* `opacity` property.
+I'll be using *SVG* for diagrams too.
 
 I followed [Dan Piponi][dan]'s example and inlined the *archive* page into *home*
 and *contact* into the footer.
@@ -115,7 +116,7 @@ Tracking & analytics
 
 I'm a total hypocrite.
 
-In fact, I wont add much as it should be pretty clear what I mean.
+I won't add much as it should be pretty clear what I mean.
 This is also why I think confiding private data to governments or corporations
 is the worst idea ever.
 They are people like you & me, after all.
