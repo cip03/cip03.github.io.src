@@ -139,6 +139,10 @@ hr {
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
+div.footnotes {
+    font-size: 0.8em;
+}
+
 a:link {
     color:#5588aa;
     text-decoration: none;
