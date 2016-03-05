@@ -1,8 +1,9 @@
 body {
     color: black;
-    font-size: 1em;
     margin: 0px auto 0px auto;
     width: 45em;
+    font-size: 1em;
+    hyphens: auto;
 }
 
 /* Header *********************************************************************/
