@@ -1,19 +1,20 @@
 $for(postsNew)$
-<h1><a href="$url$">$title$</a></h1>
+            <article>
+                <h1><a href="$url$">$title$</a></h1>
 $partial("templates/post-header.html")$
-<div class="contents">
+                <div class="indented">
 $body$
-</div>
-$endfor$
-
-<h1> Older posts </h1>
-<div class="contents">
-$for(postsOld)$
-    <a href="$url$">$title$</a> - $date$
-$endfor$
-</div>
-
-<h1> Tags </h1>
-<div class="contents">
+                </div>
+            </article>$endfor$
+            <section>
+                <h1> Older posts </h1>
+                <div class="indented">$for(postsOld)$
+                    <a href="$url$">$title$</a> - <time datetime="$date$">$dateLong$</time> $endfor$
+                </div>
+            </section>
+            <section>
+                <h1> Tags </h1>
+                <div class="indented">
 $tags$
-</div>
+                </div>
+            </section>

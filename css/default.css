@@ -8,20 +8,20 @@ body {
 
 /* Header *********************************************************************/
 
-div#header {
+header {
     border-bottom: 1px dotted grey;
     margin-bottom: 1em;
     padding: 0.5em 0px 0.5em 0px;
 }
 
-div#header a {
+header a {
     color: grey;
     font-size: 1em;
     font-weight: bold;
     text-decoration: none;
 }
 
-div#header a:hover {
+header a:hover {
     color: black;
 }
 
@@ -48,7 +48,7 @@ img.icon:hover {
 
 /* Footer *********************************************************************/
 
-div#footer {
+footer {
     border-top: 1px dotted black;
     color: #555;
     font-size: 0.8em;
@@ -109,7 +109,7 @@ div.info {
     font-style: italic;
 }
 
-div.contents {
+div.indented {
     margin-left: 2em;
     padding-left: 1em;
     border-left: 1px dotted black;

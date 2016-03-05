@@ -32,7 +32,9 @@ mainCtx =
   defaultContext
 
 postCtx :: Context String
-postCtx = dateField "date" "%B %e, %Y" <> mainCtx
+postCtx = dateField "date" "%F"
+       <> dateField "dateLong" "%B %e, %Y"
+       <> mainCtx
 
 main :: IO ()
 main = hakyllWith config $ do
@@ -61,7 +63,6 @@ main = hakyllWith config $ do
       let ctx = constField "title" title
              <> listField "posts" postCtx (return posts)
              <> mainCtx
-
       makeItem ""
         >>= loadAndApplyTemplate "templates/tag.html" ctx
         >>= loadAndApplyTemplate "templates/default.html" ctx
