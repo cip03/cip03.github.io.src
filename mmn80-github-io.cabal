@@ -1,10 +1,21 @@
 name:               mmn80-github-io
 version:            0.1.0.0
+homepage:           https://github.com/mmn80/mmn80.github.io.src
+author:             Călin Ardelean
+maintainer:         Călin Ardelean <mmn80cpu@gmail.com>
+copyright:          Copyright (c) 2016 Călin Ardelean
+license:            BSD3
+stability:          experimental
 build-type:         Simple
 cabal-version:      >= 1.10
 
+source-repository head
+  type:     git
+  location: https://github.com/mmn80/mmn80.github.io.src.git
+
 executable site
-  main-is:          site.hs
+  main-is:          Main.hs
+  hs-source-dirs:   src
   build-depends:    base == 4.*
                   , hakyll == 4.7.*
                   , pandoc
