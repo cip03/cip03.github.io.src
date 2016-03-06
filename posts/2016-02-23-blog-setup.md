@@ -7,6 +7,7 @@ math: true
 
 ### Contents
 - [Static generator]
+- [Diagrams]
 - [Web theme]
 - [Comments]
 - [Tracking & analytics]
@@ -44,6 +45,48 @@ post's), to encourage readers to use a browser sporting native *MathML*, like
 Here's a test formula for you:
 $\hat{f}(\xi) = \int_{-\infty}^\infty f(x)\ e^{- 2\pi i x \xi}\,dx.$
 
+Diagrams
+--------
+
+I'm searching for a language in the style of *Markdown*, a thin layer on top of
+*SVG* with little dependencies and whose compiler would be easy to reproduce
+in whatever platform of the future.
+
+*AsciiArt* can also be read in source form, and there are some scripts
+out there to convert it into something vectorial, but it's still too limited
+as a general solution, and does not support "pass through" extensibility like
+*Markdown*.
+At the other extreme I could use [diagrams] directly inside a code block and
+run it with `runghc` from the filter.
+
+So currently I'd generate the *SVG* in *Inkscape* or, for simpler diagrams
+I'd write them by hand.
+To make the latter easier, I added a *Pandoc* filter to *Hakyll* and a
+code block parser so I can write *XML* with indentation rules instead of tags.
+I'm thinking to improve it with a simple template system,
+so I could define higher level things like "nodes" and "links" and reduce in
+this way the verbosity.
+I like this approach very much and I hope I'll get to something deserving of
+the *Markdown* analogy.
+
+```svg-light
+svg width=40em height=5em viewBox="0 0 400 50"
+  defs
+    symbol id=node
+      ellipse style=fill:white;stroke:black;stroke-width:3; cx=24 cy=24 rx=20 ry=20
+      text text-anchor=middle x=24 y=28 style=font-size:1em;
+        @λ
+    marker id=arrowhead viewBox="0 0 10 10" refX=0 refY=5 markerUnits=strokeWidth markerWidth=4 markerHeight=3 orient=auto
+      path d="M 0 0 L 10 5 L 0 10 z"
+    symbol id=arrow
+      path style=fill:none;stroke:black;stroke-width:3; d="M2,5 C2,5 50,5 50,5" marker-end="url(#arrowhead)"
+  use x=0 y=0 xlink:href=#node
+  use x=100 y=0 xlink:href=#node
+  use x=200 y=0 xlink:href=#node
+  use x=42 y=18 xlink:href=#arrow
+  use x=0 y=0 xlink:href=#arrow transform="translate(205,28) rotate(180)"
+```
+
 Web theme
 ---------
 
@@ -55,6 +98,13 @@ on all devices.
 High-dpi displays won't collapse the text into a string of microscopic black
 holes, while on wide screens the need for binoculars and current line
 markers for navigation will be eschewed.
+
+I'm using the `text-align: justify` alignment together with the
+`hyphens: auto` *CSS3* option which I just learned about.
+Initially the document was *XHTML* but in order to make `hyphens: auto` work,
+I needed to add beside `xml:lang="en"` also `lang="en"` which makes the
+validator complain.
+So I switched to *HTML5* and everything is fine.
 
 The black icons are vectorial (*SVG*), so they look smooth on high-dpi too.
 With a *SVG* editor like [Inkscape] it's snappy to take some public domain
@@ -131,6 +181,8 @@ Well, me, as I don't know you.
 [Markdown]: http://daringfireball.net/projects/markdown/ "Markdown"
 [HTMLMathMethod]: http://hackage.haskell.org/package/pandoc/docs/Text-Pandoc-Options.html#t:HTMLMathMethod "Documentation for pandoc math rendering options"
 [lfh]: https://hackage.haskell.org/package/latex-formulae-hakyll-0.2.0.1 "The latex-formulae-hakyll package on Hackage"
+
+[diagrams]: https://hackage.haskell.org/package/diagrams "The diagrams package on Hackage"
 
 [Inkscape]: https://inkscape.org/en/ "Inkscape"
 [dan]: http://blog.sigfpe.com/ "A Neighborhood of Infinity"
