@@ -15,6 +15,7 @@ source-repository head
 
 executable site
   main-is:          Main.hs
+  other-modules:    SvgParser
   hs-source-dirs:   src
   build-depends:    base == 4.*
                   , hakyll == 4.7.*
