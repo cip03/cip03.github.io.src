@@ -73,30 +73,31 @@ the *Markdown* analogy.
 svg width=40em height=5em viewBox="-100 0 400 50"
   defs
     symbol id=node
-      ellipse style=fill:white;stroke:black;stroke-width:3; cx=24 cy=24 rx=20 ry=20
-    symbol id=lambda
-      use xlink:href=#node
-      text text-anchor=middle x=24 y=28 style=font-size:1em;
-        > λ
-    symbol id=pi
-      use xlink:href=#node
-      text text-anchor=middle x=24 y=28 style=font-size:1em; fill=red
-        > π
-    symbol id=lampi
-      use xlink:href=#node
-      text text-anchor=middle x=24 y=28 style=font-size:1em;
-        > λ
-          tspan fill=red
-            > π
-    marker id=arrowhead viewBox="0 0 10 10" refX=0 refY=5 markerUnits=strokeWidth markerWidth=4 markerHeight=3 orient=auto
+      ellipse style=fill:white;stroke:black;stroke-width:3;
+        ^ cx=24 cy=24 rx=20 ry=20
+    marker id=arrowhead viewBox="0 0 10 10" refX=0 refY=5
+      ^ markerUnits=strokeWidth markerWidth=4 markerHeight=3 orient=auto
       path d="M 0 0 L 10 5 L 0 10 z"
     symbol id=arrow
-      path style=fill:none;stroke:black;stroke-width:3; d="M2,5 C2,5 50,5 50,5" marker-end="url(#arrowhead)"
+      path style=fill:none;stroke:black;stroke-width:3; d="M2,5 C2,5 50,5 50,5"
+        ^ marker-end="url(#arrowhead)"
     filter id=conv filterUnits=userSpaceOnUse x=0 y=0 width=500 height=500
-      feConvolveMatrix order=5 preserveAlpha=true kernelMatrix="2 0 1 0 2 0 1 2 1 0 1 2 -8 2 1 0 1 2 1 0 2 0 1 0 2"
-  use x=0 y=0 xlink:href=#lambda filter=url(#conv)
-  use x=100 y=0 xlink:href=#lampi
-  use x=200 y=0 xlink:href=#pi filter=url(#conv)
+      feConvolveMatrix order=5 preserveAlpha=true
+        ^ kernelMatrix="2 0 1 0 2 0 1 2 1 0 1 2 -8 2 1 0 1 2 1 0 2 0 1 0 2"
+  g filter=url(#conv)
+    use xlink:href=#node
+    text text-anchor=middle x=24 y=28
+      > λ
+  g transform=translate(100,0)
+    use xlink:href=#node
+    text text-anchor=middle x=24 y=28
+      > λ
+        tspan fill=red
+          > π
+  g transform=translate(200,0) filter=url(#conv)
+    use xlink:href=#node
+    text text-anchor=middle x=24 y=28 fill=red
+      > π
   use x=42 y=18 xlink:href=#arrow
   use x=0 y=0 xlink:href=#arrow transform="translate(205,28) rotate(180)"
 ```

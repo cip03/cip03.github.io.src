@@ -26,10 +26,13 @@ elementParser lvl = do
   let ind = replicate lvl ' '
   textParser lvl ind <|> do
     tag   <- many1 letter
-    attrs <- manyTill attrParser eol
+    let attrLn = manyTill attrParser eol
+    attrs <- attrLn
+    xattr <- many $ try $ count (lvl + 2) spc >> char '^' >> attrLn
     kids  <- many $ elementParser $ lvl + 2
     return $ ind ++ "<" ++ tag ++
-      (if null attrs then "" else " ") ++ unwords attrs ++
+      concatMap (' ' :) attrs ++
+      concatMap (' ' :) (concat xattr) ++
       (if all null kids then " />"
        else ">\n" ++ unlines kids ++ ind ++ "</" ++ tag ++ ">")
 
