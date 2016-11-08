@@ -10,7 +10,7 @@ The _Criticism_ section of the Wikipedia page on [late binding][wiki-late] state
 
 In this post we will use existential quantification to unfold a concrete
 implementation of dynamic binding in GHC Haskell, that is both (JIT) compiled,
-and type safe.
+and type safe (with caveats).
 We will build a simple game world that allows dynamic recompilation of
 entities and generic world behaviors (like a physics engine),
 all working within `ghci`.
@@ -141,7 +141,7 @@ but uses the above trick to do it abstractly.
 
 ## The entity
 
-In the situation of loosing all health, a non-black cat will turn black,
+In the situation of losing all health, a non-black cat will turn black,
 and after that any attack will make it more powerful:
 
 ```Haskell
@@ -196,7 +196,7 @@ Nevertheless, we could extend the simple setup of this post with one of the
 solutions to the expression problem, like the `mtl` style, data types à la carte,
 or the `Free` / `Cofree` [pairing][piponi].
 Exploring this is left as an exercise for the industrious reader.
-Which actually includes me, I hope.
+Which includes me, I hope.
 
 ---
 
@@ -343,8 +343,8 @@ phantom worlds (together with their compilers) within phantom worlds, etc.
 Does this tree structure flatten out into a meta tower for some reason?
 What's the connection with modal logic and Kripke semantics?
 Does System F actually ensures consistency of this multiverse?
-What do dependent types add to this story?
-Ok, I'll stop here before I make too big of a fool of myself.
+What complications do dependent types add to this story?
+Ok, I'll stop here before I make too big a fool of myself.
 
 But I would like to follow this thread further in the future, use it as a
 motivator to learn new stuff.
