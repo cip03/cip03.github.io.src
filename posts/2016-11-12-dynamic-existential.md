@@ -363,11 +363,11 @@ Tis magic.
 
 ---
 
-GHC has a thing called `Dynamic` that cannot be used to implement live coding
-to the same extent, since using it in a generic world traversal introduces a
-module dependency to the entity definition module.
-So I think that type, contrary to it's name, does not capture the full power
-of "dynamic", at least not in [Alan Key's][smalltalk] [sense][dynamic].
+GHC has a type called `Dynamic` that cannot be used for live coding
+to the same extent, since opening a `Dynamic` inside a generic world traversal
+will introduce a module dependency to the entity definition module.
+So I think `Dynamic` does not live up to its name,
+at least not in [Alan Key's][smalltalk] [sense][dynamic].
 
 ---
 
