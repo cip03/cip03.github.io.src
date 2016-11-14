@@ -118,7 +118,7 @@ Hence, the argument this function receives will be "late bound".
 
 ---
 
-We use here `RankNTypes`.
+We use here [higher rank polymorphism][rankn].
 In case you see this for the first time it's important to understand who,
 among the caller and callee, has the responsibility to supply each argument
 in a nested, polymorphic function type.
@@ -133,18 +133,14 @@ After understanding variance we should observe that we are not talking here
 about who supplies values at run time, but rather who supplies type arguments
 at type checking time.
 But the analogy carries well when we remember that in _System F_ (the basis for
-_Haskell Core_), type applications are explicit, and even more, in dependently typed
-languages all global distinctions between types and values melt away.
-
+_Haskell Core_), type applications are explicit.
 In _Core_, functions actually have extra lambda bindings for their type arguments,
-and these lambdas can appear in positive or negative positions just as before,
-except that the type applications can be evaluated at compile time,
-and all types eventually erased due to the limitations imposed in the language.
+and these Λs could appear in positive or negative positions as well.
 
 In old school parametric polymorphism all types are rank 1, meaning it's always
 the caller that fills in type arguments, regardless of the variance of
 the (run time) arguments that have those types.
-So all big lambdas float to the top of a nested function, while small lambdas
+So all big Λs float to the top of a nested function, while small λs
 can get stuck submerged in a negative position.
 
 Combining the two concepts, we see that a *negative* type argument afforded by
@@ -379,6 +375,7 @@ But at least I'll have the motivation to learn more type theory.
 [wiki-late]: https://en.wikipedia.org/wiki/Late_binding "Late binding - Wikipedia"
 [Typed Racket]: https://docs.racket-lang.org/ts-guide/index.html "The Typed Racket Guide"
 [variance]: https://www.schoolofhaskell.com/user/commercial/content/covariance-contravariance "Covariance, contravariance, and positive and negative position - School of Haskell"
+[rankn]: https://ocharles.org.uk/blog/guest-posts/2014-12-18-rank-n-types.html "24 Days of GHC Extensions: Rank N Types"
 [piponi]: http://blog.sigfpe.com/2014/05/cofree-meets-free.html "A Neighborhood of Infinity: Cofree meets Free"
 [Github]: https://github.com/mmn80/dynamic-meta "Github repo containing the code from this post"
 [smalltalk]: http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en "Dr. Alan Kay on the Meaning of “Object-Oriented Programming”"
