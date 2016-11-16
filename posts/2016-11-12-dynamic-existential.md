@@ -1,5 +1,5 @@
 ---
-title: Phantom cats in a dynamical world
+title: Phantom cats in a dynamic world
 author: Călin Ardelean
 tags: haskell, dynamic, types
 ---
@@ -16,7 +16,7 @@ dynamic language built on top of a more sophisticated compiler infrastructure.
 
 In this post we'll do the converse.
 We will see how a compiled language with a sufficiently powerful static type system,
-in our case _GHC Haskell_, can accommodate a fully dynamic meta environment
+in our case _GHC Haskell_, can accommodate a dynamic meta environment
 that supports "real" live coding.
 We will use abstract data types implemented with the help of existential
 quantification to solve the module dependency problem that would otherwise
@@ -54,15 +54,15 @@ class Entity a where
   health :: a -> Int
   attack :: Int -> a -> a
 
-data EntityRecord = forall a. Entity a => EntityRecord a
+data SomeEntity = forall a. Entity a => SomeEntity a
 
-world :: MVar (Map.IntMap EntityRecord)
+world :: MVar (Map.IntMap SomeEntity)
 world = unsafePerformIO $ newMVar Map.empty
 ```
 
 `Entity` is our abstract entity class with a sample getter and setter inside.
 
-`EntityRecord` existentially wraps a pointer to a value of a type implementing
+`SomeEntity` [existentially] wraps a pointer to a value of a type implementing
 the `Entity` interface, *together with the dictionary* of functions that any
 future version of us can use to interact with it abstractly, as we shall see.
 
@@ -90,7 +90,7 @@ spawn e = do
   let r = Ref (k + 1)
   putMVar ref (r `seq` r)
   w <- takeMVar world
-  putMVar world $ Map.insert (getRef r) (EntityRecord e) w
+  putMVar world $ Map.insert (getRef r) (SomeEntity e) w
   return r
 ```
 
@@ -101,15 +101,15 @@ withEntity :: Ref -> (forall a. Entity a => a -> (a, b)) -> IO (Maybe b)
 withEntity (Ref k) f = do
   w <- takeMVar world
   let (w', mb) = case Map.lookup k w of
-                   Just (EntityRecord e) -> let (e', x) = f e in
-                                            (Map.insert k (EntityRecord e') w, Just x)
+                   Just (SomeEntity e) -> let (e', x) = f e in
+                                          (Map.insert k (SomeEntity e') w, Just x)
                    Nothing -> (w, Nothing)
   putMVar world w'
   return mb
 
 foldWorld :: Monoid m => (forall a. Entity a => Ref -> a -> m) -> IO m
 foldWorld f = readMVar world >>= return . Map.foldMapWithKey f'
-  where f' k (EntityRecord e) = f (Ref k) e
+  where f' k (SomeEntity e) = f (Ref k) e
 ```
 
 `withEntity` does a lookup based on a `Ref` and applies a caller supplied
@@ -119,37 +119,33 @@ Hence, the argument this function receives will be "late bound".
 ---
 
 We use here [higher rank polymorphism][rankn].
-In case you see this for the first time it's important to understand who,
-among the caller and callee, has the responsibility to supply each argument
-in a nested, polymorphic function type.
-If it's the callee we call such location in the shape of the type (like the
-return type of the whole function) **positive**.
-And if it's the caller, **negative**.
-It so happens that _School of Haskell_ has published a [comprehensive
-article][variance] on this very topic just as I was writing this.
-Lucky me.
 
-After understanding variance we should observe that we are not talking here
-about who supplies values at run time, but rather who supplies type arguments
-at type checking time.
-But the analogy carries well when we remember that in _System F_ (the basis for
-_Haskell Core_), type applications are explicit.
-In _Core_, functions actually have extra lambda bindings for their type arguments,
-and these Λs could appear in positive or negative positions as well.
+The usual rank 1 parametric polymorphism that we find in Haskell 98 only allows
+type quantifiers (`forall`s) at the beginning of a nested function's type.
+When translated to the intermediate language _Core_, which is based on the
+powerful _System F_, these `forall`s are replaced with extra arguments,
+except that they are written with big `Λ`s, rather then small `λ`s, in order to
+distinguish them as type arguments.
+At the call site of a polymorphic function these arguments are explicitly
+instantiated with a (monomorphic) type, and this type is computed at compile
+time with the type inference algorithm.
 
-In old school parametric polymorphism all types are rank 1, meaning it's always
-the caller that fills in type arguments, regardless of the variance of
-the (run time) arguments that have those types.
-So all big Λs float to the top of a nested function, while small λs
-can get stuck submerged in a negative position.
+Now, if more of the power of _System F_ is exposed through `-XRankNTypes`,
+we can write functions that have deeply nested `forall`s, aka `Λ`s.
+Type inference becomes undecidable, so the user has to provide explicit
+signatures to help the type checker.
+But notice how this means that it's no longer the caller's privilege to
+always instantiate the type arguments.
+Similarly, normal `λ` bindings can also appear in a [negative position][variance].
 
-Combining the two concepts, we see that a *negative* type argument afforded by
-a higher rank type not only that it forwards the whodunit question from the caller
-to the callee, but also from compile time to run time, in terms of
-**when can we compile** the specialized version of the function.
-This would be a sort of type theoretic explanation of JIT compilation.
-For the moment a very confused one, I'll admit.
-As you may have guessed, I'm no expert.
+My observation is that a negatively placed `Λ` has direct implications for
+the compiling of specialized versions of polymorphic functions.
+Firstly, the **place** that triggers specialization is no longer the caller,
+which now has to itself provide a polymorphic function.
+Secondly, the **time** when this can happen has extended from compile-time to
+run-time, which can be as late as the time when our higher ranked function is called.
+This argument is symmetric, but remember that we want to keep the `World` static,
+and only dynamically reload the dependent modules.
 
 ---
 
@@ -238,18 +234,18 @@ vs. performance trade off.
 Additionally, we'll hope `ghci` will apply the `-O2`s in the future.
 
 ```ghci
-λ> :set -fobject-code 
-λ> :reload
+> :set -fobject-code 
+> :reload
 ```
 
 Let's spawn a cat, send an attack message, and inspect the world:
 
 ```ghci
-λ> spawn $ Cat 100 False
+> spawn $ Cat 100 False
 1
-λ> withEntity 1 $ \cat -> (attack 10 cat, health cat)
+> withEntity 1 $ \cat -> (attack 10 cat, health cat)
 Just 100
-λ> inspectWorld
+> inspectWorld
 "(id: 1, health: 90) "
 ```
 
@@ -267,7 +263,7 @@ instance Entity Cat where
 We now switch back to our `ghci` terminal and `:reload` (I formatted the output a bit):
 
 ```ghci
-λ> :reload
+> :reload
 [3 of 4] Compiling Cat  ( /home/calin/src/dynamic-meta/src/Cat.hs,
                           /home/calin/src/dynamic-meta/.stack-work/odir/Cat.o )
 Ok, modules loaded:
@@ -282,7 +278,7 @@ subfolder called `odir` of our `stack` working environment.
 Now let's check the world:
 
 ```ghci
-λ> inspectWorld 
+> inspectWorld 
 "(id: 1, health: 90) "
 ```
 
@@ -294,13 +290,13 @@ Let's see if we can add a new cat and test how both it and the phantom behave
 when attacked:
 
 ```ghci
-λ> spawn $ Cat 100 False
+> spawn $ Cat 100 False
 2
-λ> withEntity 1 $ \cat -> (attack 10 cat, health cat)
+> withEntity 1 $ \cat -> (attack 10 cat, health cat)
 Just 90
-λ> withEntity 2 $ \cat -> (attack 10 cat, health cat)
+> withEntity 2 $ \cat -> (attack 10 cat, health cat)
 Just 100
-λ> inspectWorld
+> inspectWorld
 "(id: 1, health: 80) (id: 2, health: 80) "
 ```
 
@@ -309,9 +305,6 @@ takes 10 as before!
 
 So there it is, 2 versions of the "same" object type, together with their
 methods, both compiled, coexisting in peace and type safety inside the same heap.
-If this does not make both Alan Kay and Robert Harper happy, I don't know what will.
-I'm joking, of course.
-Nothing can restore those guys' faith in humanity after what we did with their ideas.
 
 We can also make changes to the `Physics`:
 
@@ -324,14 +317,14 @@ inspectWorld = foldWorld f
 ...reload, and check if the world still exists:
 
 ```ghci
-λ> :reload
+> :reload
 [3 of 4] Compiling Physics ( /home/calin/src/dynamic-meta/src/Physics.hs,
                              /home/calin/src/dynamic-meta/.stack-work/odir/Physics.o )
 Ok, modules loaded:
 World (/home/calin/src/dynamic-meta/.stack-work/odir/World.o),
 Physics (/home/calin/src/dynamic-meta/.stack-work/odir/Physics.o),
 Cat (/home/calin/src/dynamic-meta/.stack-work/odir/Cat.o).
-λ> inspectWorld
+> inspectWorld
 "(id = 1, health = 80) (id = 2, health = 80) "
 ```
 
@@ -349,7 +342,6 @@ Just like in _Racket_, we can unfold some macros, sub types and contracts
 to tame them.
 But we could also have objects hold normal, immutable pointers to each other
 that only get updated once per frame, automatically.
-I'll have to think about this more.
 
 ---
 
@@ -359,24 +351,24 @@ Tis magic.
 
 ---
 
-GHC has a type called `Dynamic` that cannot be used for live coding
+**cocreature** has a [blog post][cocreature] showing how to dynamically load
+GHC compiled modules in general, as long as you do the bookkeeping.
+
+---
+
+Inside GHC, there is a type called `Dynamic` that cannot be used for live coding
 to the same extent, since opening a `Dynamic` inside a generic world traversal
 will introduce a module dependency to the entity definition module.
 So I think `Dynamic` does not live up to its name,
 at least not in [Alan Key's][smalltalk] [sense][dynamic].
 
----
-
-As for me, I'll go read that Reynolds "GEDANKEN" paper Alan Key mentions,
-and further explore the connection between "dynamic" and "higher rank",
-which undoubtedly will turn out to involve some trivial misunderstandings on my part.
-But at least I'll have the motivation to learn more type theory.
-
 [wiki-late]: https://en.wikipedia.org/wiki/Late_binding "Late binding - Wikipedia"
 [Typed Racket]: https://docs.racket-lang.org/ts-guide/index.html "The Typed Racket Guide"
+[existentially]: http://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#existentially-quantified-data-constructors "9.1. Language options — Glasgow Haskell Compiler Users Guide"
 [variance]: https://www.schoolofhaskell.com/user/commercial/content/covariance-contravariance "Covariance, contravariance, and positive and negative position - School of Haskell"
 [rankn]: https://ocharles.org.uk/blog/guest-posts/2014-12-18-rank-n-types.html "24 Days of GHC Extensions: Rank N Types"
 [piponi]: http://blog.sigfpe.com/2014/05/cofree-meets-free.html "A Neighborhood of Infinity: Cofree meets Free"
 [Github]: https://github.com/mmn80/dynamic-meta "Github repo containing the code from this post"
+[cocreature]: https://purelyfunctional.org/posts/2016-05-20-dynamic-loading-haskell-module.html "purelyfunctional.org - Dynamic loading of Haskell modules"
 [smalltalk]: http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en "Dr. Alan Kay on the Meaning of “Object-Oriented Programming”"
 [dynamic]: https://computinged.wordpress.com/2010/09/11/moti-asks-objects-never-well-hardly-ever/ "In the comments section of this blog post, Alan Key suggests using the term “dynamic” to capture what he meant by OOP before that term's hijacking"
