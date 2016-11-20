@@ -78,6 +78,13 @@ instance Show Ref where show (Ref k) = show k
 
 ref :: MVar Ref
 ref = unsafePerformIO . newMVar $ Ref 0
+
+newRef :: IO Ref
+newRef = do
+  Ref k <- takeMVar ref
+  let r = Ref (k + 1)
+  putMVar ref (r `seq` r)
+return r
 ```
 
 The generic `spawn` function will be used in a context where we have a specific
@@ -86,9 +93,7 @@ entity type and its accompanying `Entity` instance.
 ```Haskell
 spawn :: Entity a => a -> IO Ref
 spawn e = do
-  Ref k <- takeMVar ref
-  let r = Ref (k + 1)
-  putMVar ref (r `seq` r)
+  r <- newRef
   w <- takeMVar world
   putMVar world $ Map.insert (getRef r) (SomeEntity e) w
   return r
