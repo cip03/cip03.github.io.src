@@ -133,7 +133,7 @@ except that they are written with big `Λ`s, rather then small `λ`s, in order t
 distinguish them as type arguments.
 At the call site of a polymorphic function these arguments are explicitly
 instantiated with a (monomorphic) type, and this type is computed at compile
-time with the type inference algorithm.
+time with the HM type inference algorithm.
 
 Now, if more of the power of _System F_ is exposed through `-XRankNTypes`,
 we can write functions that have deeply nested `forall`s, aka `Λ`s.
@@ -143,14 +143,13 @@ But notice how this means that it's no longer the caller's privilege to
 always instantiate the type arguments.
 Similarly, normal `λ` bindings can also appear in a [negative position][variance].
 
-My observation is that a negatively placed `Λ` has direct implications for
-the compiling of specialized versions of polymorphic functions.
-Firstly, the **place** that triggers specialization is no longer the caller,
-which now has to itself provide a polymorphic function.
-Secondly, the **time** when this can happen has extended from compile-time to
-run-time, which can be as late as the time when our higher ranked function is called.
-This argument is symmetric, but remember that we want to keep the `World` static,
-and only dynamically reload the dependent modules.
+A negatively placed `Λ` means that this function accepts a polymorphic function
+as argument, and gets to instantiate it (dynamically!) to whatever type it wants.
+In particular, as a closure, it can have such a secret type in its environment.
+With existentials, we wrap a type and a bunch of primitive operations together,
+and then write rank 2 functions that receive from users a polymorphic function
+that can only use those primitives, targeting the object it gets as argument
+but whose type it'll never know.
 
 ---
 
@@ -226,6 +225,8 @@ Which includes me, I hope.
 ## Doing it live
 
 I should point out that the code in this post can also be found on [Github].
+That repo also showcases other methods for live coding, which I'll discuss in
+future posts.
 
 So let's fire up `stack ghci` and play.
 
@@ -359,14 +360,6 @@ Tis magic.
 **cocreature** has a [blog post][cocreature] showing how to dynamically load
 GHC compiled modules in general, as long as you do the bookkeeping.
 
----
-
-Inside GHC, there is a type called `Dynamic` that cannot be used for live coding
-to the same extent, since opening a `Dynamic` inside a generic world traversal
-will introduce a module dependency to the entity definition module.
-So I think `Dynamic` does not live up to its name,
-at least not in [Alan Key's][smalltalk] [sense][dynamic].
-
 [wiki-late]: https://en.wikipedia.org/wiki/Late_binding "Late binding - Wikipedia"
 [Typed Racket]: https://docs.racket-lang.org/ts-guide/index.html "The Typed Racket Guide"
 [existentially]: http://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#existentially-quantified-data-constructors "9.1. Language options — Glasgow Haskell Compiler Users Guide"
@@ -375,5 +368,3 @@ at least not in [Alan Key's][smalltalk] [sense][dynamic].
 [piponi]: http://blog.sigfpe.com/2014/05/cofree-meets-free.html "A Neighborhood of Infinity: Cofree meets Free"
 [Github]: https://github.com/mmn80/dynamic-meta "Github repo containing the code from this post"
 [cocreature]: https://purelyfunctional.org/posts/2016-05-20-dynamic-loading-haskell-module.html "purelyfunctional.org - Dynamic loading of Haskell modules"
-[smalltalk]: http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en "Dr. Alan Kay on the Meaning of “Object-Oriented Programming”"
-[dynamic]: https://computinged.wordpress.com/2010/09/11/moti-asks-objects-never-well-hardly-ever/ "In the comments section of this blog post, Alan Key suggests using the term “dynamic” to capture what he meant by OOP before that term's hijacking"
