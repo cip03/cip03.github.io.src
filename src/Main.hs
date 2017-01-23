@@ -10,7 +10,7 @@ import SvgParser
 
 siteTitle  = "Functional Transfixity"
 siteDesc   = "Stories on types, functional programming and the real world"
-siteUrl    = "http://blog.mmn80.xyz"
+siteUrl    = "http://mmn80.github.io"
 siteAuthor = "Călin Ardelean"
 siteEmail  = "mmn80cpu@gmail.com"
 
@@ -59,10 +59,6 @@ main = hakyllWith config $ do
   match "css/*" $ do
     route   idRoute
     compile compressCssCompiler
-
-  match "CNAME" $ do
-    route   idRoute
-    compile copyFileCompiler
 
   tags <- buildTags "posts/*" (fromCapture "tags/*.html")
   let postTagsCtx = tagsField "tags" tags <> postCtx
