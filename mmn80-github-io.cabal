@@ -18,7 +18,7 @@ executable site
   other-modules:    SvgParser
   hs-source-dirs:   src
   build-depends:    base == 4.*
-                  , hakyll == 4.9.*
+                  , hakyll
                   , pandoc
                   , pandoc-types
                   , parsec

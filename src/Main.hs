@@ -95,7 +95,7 @@ main = hakyllWith config $ do
         defaultHakyllReaderOptions
         defaultHakyllWriterOptions
           { writerSectionDivs = True
-          , writerHTMLMathMethod = MathML Nothing }
+          , writerHTMLMathMethod = MathML }
           {-, writerHTMLMathMethod = MathJax "" -}
           {-, WebTeX "http://chart.apis.google.com/chart?cht=tx&chl=" -}
         pandocFilter
